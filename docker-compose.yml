@@ -1,0 +1,93 @@
+version: '2'
+volumes:
+  db:
+    driver: local
+  uploads:
+    driver: local
+services:
+  database:
+    container_name: datagraft-db
+    image: postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: datagraft-prod
+  datagraft-portal:
+    container_name: datagraft-portal
+    image: datagraft/datagraft-portal
+    ports:
+      - "3000:3000"
+    links:
+      - database:database-host
+    volumes:
+      - uploads:/usr/src/app/tmp/uploads/store
+    environment:
+      DATABASE_URL: postgresql://postgres:password@database-host
+      RAILS_ENV: production
+      SECRET_KEY_BASE: secretkeybase
+      OMNIAUTH_FACEBOOK_KEY: facebookkey
+      OMNIAUTH_FACEBOOK_SECRET: facebooksecret
+      OMNIAUTH_GITHUB_KEY: githubkey
+      OMNIAUTH_GITHUB_SECRET: githubsecret
+  grafterizer:
+    container_name: grafterizer
+    image: datagraft/grafterizer
+    ports:
+      - "8081:80"
+    links:
+      - graftwerk
+      - grafterizer-dispatch-service
+      - vocabulary-manager
+      - graftwerk-cache
+      - jarfter
+    restart: always
+  grafterizer-dispatch-service:
+    container_name: grafterizer-dispatch-service
+    image: datagraft/grafterizer-dispatch-service
+    links:
+      - graftwerk
+      - graftwerk-cache
+      - datagraft-portal
+    ports:
+      - "8082:8082"
+    environment:
+      COOKIE_STORE_SECRET: cookiestoresecret
+      OAUTH2_CLIENT_ID: oauth2clientid
+      OAUTH2_CLIENT_SECRET: oauth2clientsecret
+      GRAFTWERK_URI: http://graftwerk:8080
+      GRAFTWERK_CACHE_URI: http://graftwerk-cache:8082
+      DATAGRAFT_URI: http://datagraft-portal:3000
+      # Public URI of grafterizer-dev.
+      # This URI MUST be accessible by the end-user.
+      CORS_ORIGIN: http://localhost:8081
+      # Public URI of the backend server.
+      # This URI MUST be accessible by the end-user.
+      PUBLIC_CALLBACK_SERVER: http://localhost:8082
+      # same as DATAGRAFT_URI by default
+      # OAUTH2_SITE: http://datagraft-portal:3000
+      PUBLIC_OAUTH2_SITE: http://localhost:3000
+    restart: always
+  graftwerk-cache:
+    container_name: graftwerk-cache
+    image: datagraft/graftwerk-cache
+    ports:
+      - "8083:8082"
+    links:
+      - graftwerk
+    environment:
+      GRAFTWERK: graftwerk
+      GRAFTWERK_PORT: 8080
+    restart: always
+  graftwerk:
+    container_name: graftwerk
+    image: datagraft/graftwerk
+    restart: always
+  vocabulary-manager:
+    container_name: vocabulary-manager
+    image: datagraft/vocabulary-manager
+    restart: always
+  jarfter:
+    container_name: jarfter
+    image: datagraft/jarfter
+    restart: always
