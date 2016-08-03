@@ -83,6 +83,8 @@ services:
     container_name: graftwerk
     image: datagraft/graftwerk
     restart: always
+    environment:
+      PORT: 8080
   vocabulary-manager:
     container_name: vocabulary-manager
     image: datagraft/vocabulary-manager
