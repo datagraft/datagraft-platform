@@ -12,19 +12,19 @@ services:
       - db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: datagraft-prod
+      POSTGRES_DB: datagraft-dev
   datagraft-portal:
     container_name: datagraft-portal
     image: datagraft/datagraft-portal
     ports:
-      - "3000:3000"
+      - "55555:3000"
     links:
       - database:database-host
     volumes:
       - uploads:/usr/src/app/tmp/uploads/store
     environment:
       DATABASE_URL: postgresql://postgres:password@database-host
-      RAILS_ENV: production
+      RAILS_ENV: development
       SECRET_KEY_BASE: secretkeybase
       OMNIAUTH_FACEBOOK_KEY: facebookkey
       OMNIAUTH_FACEBOOK_SECRET: facebooksecret
@@ -34,7 +34,7 @@ services:
     container_name: grafterizer
     image: datagraft/grafterizer
     ports:
-      - "8081:80"
+      - "55556:80"
     links:
       - graftwerk
       - grafterizer-dispatch-service
@@ -50,7 +50,7 @@ services:
       - graftwerk-cache
       - datagraft-portal
     ports:
-      - "8082:8082"
+      - "55557:8082"
     environment:
       COOKIE_STORE_SECRET: cookiestoresecret
       OAUTH2_CLIENT_ID: oauth2clientid
@@ -58,21 +58,21 @@ services:
       GRAFTWERK_URI: http://graftwerk:8080
       GRAFTWERK_CACHE_URI: http://graftwerk-cache:8082
       DATAGRAFT_URI: http://datagraft-portal:3000
-      # Public URI of grafterizer-dev.
+      # Public URI of grafterizer.
       # This URI MUST be accessible by the end-user.
-      CORS_ORIGIN: http://localhost:8081
-      # Public URI of the backend server.
+      CORS_ORIGIN: http://localhost:55556
+      # Public URI of the grafterizer-dispatch-service server.
       # This URI MUST be accessible by the end-user.
-      PUBLIC_CALLBACK_SERVER: http://localhost:8082
+      PUBLIC_CALLBACK_SERVER: http://localhost:55557
       # same as DATAGRAFT_URI by default
       # OAUTH2_SITE: http://datagraft-portal:3000
-      PUBLIC_OAUTH2_SITE: http://localhost:3000
+      PUBLIC_OAUTH2_SITE: http://localhost:55555
     restart: always
   graftwerk-cache:
     container_name: graftwerk-cache
     image: datagraft/graftwerk-cache
     ports:
-      - "8083:8082"
+      - "55558:8082"
     links:
       - graftwerk
     environment:
