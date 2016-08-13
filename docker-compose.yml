@@ -15,11 +15,12 @@ services:
       POSTGRES_DB: datagraft-dev
   datagraft-portal:
     container_name: datagraft-portal
-    image: datagraft/datagraft-portal
+    image: datagraft/datagraft-portal:cd
     ports:
       - "55555:3000"
     links:
       - database:database-host
+    command: bash startup.sh
     volumes:
       - uploads:/usr/src/app/tmp/uploads/store
     environment:
