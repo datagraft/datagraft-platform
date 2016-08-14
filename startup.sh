@@ -13,7 +13,9 @@ uid=$1
 secret=$2
 redirect_uri=$3
 
-docker exec -t datagraft-db bash -c 'until head -c 0 </dev/tcp/$(hostname -I)/5432; do sleep 1; done'
+docker exec -t datagraft-db bash -c 'until head -c 0 </dev/tcp/127.0.0.1/5432; do sleep 1; done'
+
+docker exec -t datagraft-db bash -c 'until psql -h localhost --user=postgres --list| grep -q datagraft-dev; do sleep 1; done'
 
 docker exec datagraft-portal rake db:migrate
 
