@@ -12,7 +12,7 @@ services:
       - db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: datagraft-dev
+      POSTGRES_DB: datagraft-test
   datagraft-portal:
     container_name: datagraft-portal
     image: datagraft/datagraft-portal
@@ -25,7 +25,7 @@ services:
       - uploads:/usr/src/app/tmp/uploads/store
     environment:
       DATABASE_URL: postgresql://postgres:password@database-host
-      RAILS_ENV: development
+      RAILS_ENV: test
       SECRET_KEY_BASE: secretkeybase
       OMNIAUTH_FACEBOOK_KEY: facebookkey
       OMNIAUTH_FACEBOOK_SECRET: facebooksecret
