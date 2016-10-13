@@ -7,7 +7,7 @@ volumes:
 services:
   database:
     container_name: datagraft-db
-    image: postgres
+    image: postgres:9.5.4
     volumes:
       - db:/var/lib/postgresql/data
     environment:
