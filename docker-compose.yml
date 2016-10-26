@@ -31,6 +31,7 @@ services:
       OMNIAUTH_FACEBOOK_SECRET: facebooksecret
       OMNIAUTH_GITHUB_KEY: githubkey
       OMNIAUTH_GITHUB_SECRET: githubsecret
+      DBAAS_COORDINATOR_ENDPOINT: endpointcoordinator
   grafterizer:
     container_name: grafterizer
     image: datagraft/grafterizer
