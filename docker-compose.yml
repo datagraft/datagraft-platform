@@ -32,6 +32,7 @@ services:
       OMNIAUTH_GITHUB_KEY: githubkey
       OMNIAUTH_GITHUB_SECRET: githubsecret
       DBAAS_COORDINATOR_ENDPOINT: endpointcoordinator
+      GRAFTERIZER_PUBLIC_PATH: publicpathofgrafterizer
   grafterizer:
     container_name: grafterizer
     image: datagraft/grafterizer
