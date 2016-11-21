@@ -1,41 +1,43 @@
 version: '2'
 volumes:
-  db:
+  datagraft-data:
     driver: local
   uploads:
     driver: local
 services:
   database:
-    container_name: datagraft-db
+    container_name: database
+    ports:
+      - "5432:5432"
     image: postgres:9.5.4
     volumes:
-      - db:/var/lib/postgresql/data
+      - datagraft-data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: datagraft-test
-  datagraft-portal:
+      POSTGRES_DB: datagraft-prod
+  portal:
     container_name: datagraft-portal
-    image: datagraft/datagraft-portal
+    image: datagraft/datagraft-portal:review
     ports:
       - "55555:3000"
     links:
       - database:database-host
-    command: bash startup.sh
     volumes:
       - uploads:/usr/src/app/tmp/uploads/store
     environment:
       DATABASE_URL: postgresql://postgres:password@database-host
-      RAILS_ENV: test
-      SECRET_KEY_BASE: secretkeybase
+      RAILS_ENV: production
+      SECRET_KEY_BASE: cookiestoresecret
       OMNIAUTH_FACEBOOK_KEY: facebookkey
       OMNIAUTH_FACEBOOK_SECRET: facebooksecret
       OMNIAUTH_GITHUB_KEY: githubkey
       OMNIAUTH_GITHUB_SECRET: githubsecret
+      GRAFTWERK_URI: http://localhost:8087
+      GRAFTERIZER_PUBLIC_PATH: http://localhost:55556
       DBAAS_COORDINATOR_ENDPOINT: endpointcoordinator
-      GRAFTERIZER_PUBLIC_PATH: publicpathofgrafterizer
   grafterizer:
     container_name: grafterizer
-    image: datagraft/grafterizer
+    image: datagraft/grafterizer:review
     ports:
       - "55556:80"
     links:
@@ -47,35 +49,34 @@ services:
     restart: always
   grafterizer-dispatch-service:
     container_name: grafterizer-dispatch-service
-    image: datagraft/grafterizer-dispatch-service
+    image: datagraft/grafterizer-dispatch-service:wizard
     links:
       - graftwerk
       - graftwerk-cache
-      - datagraft-portal
+      - portal
     ports:
-      - "55557:8082"
+      - "8082:8082"
     environment:
       COOKIE_STORE_SECRET: cookiestoresecret
       OAUTH2_CLIENT_ID: oauth2clientid
       OAUTH2_CLIENT_SECRET: oauth2clientsecret
       GRAFTWERK_URI: http://graftwerk:8080
       GRAFTWERK_CACHE_URI: http://graftwerk-cache:8082
-      DATAGRAFT_URI: http://datagraft-portal:3000
+      DATAGRAFT_URI: http://portal:3000
       # Public URI of grafterizer.
       # This URI MUST be accessible by the end-user.
       CORS_ORIGIN: http://localhost:55556
       # Public URI of the grafterizer-dispatch-service server.
       # This URI MUST be accessible by the end-user.
-      PUBLIC_CALLBACK_SERVER: http://localhost:55557
+      PUBLIC_CALLBACK_SERVER: http://localhost:8082
       # same as DATAGRAFT_URI by default
-      # OAUTH2_SITE: http://datagraft-portal:3000
       PUBLIC_OAUTH2_SITE: http://localhost:55555
     restart: always
   graftwerk-cache:
     container_name: graftwerk-cache
     image: datagraft/graftwerk-cache
     ports:
-      - "55558:8082"
+      - "8083:8082"
     links:
       - graftwerk
     environment:
@@ -83,16 +84,22 @@ services:
       GRAFTWERK_PORT: 8080
     restart: always
   graftwerk:
+    ports:
+      - "8087:8080"
     container_name: graftwerk
     image: datagraft/graftwerk
     restart: always
     environment:
       PORT: 8080
   vocabulary-manager:
+    ports:
+      - "8088:8080"
     container_name: vocabulary-manager
-    image: datagraft/vocabulary-manager
+    image: dapaas/grafterizer-vocabulary
     restart: always
   jarfter:
     container_name: jarfter
+    ports:
+      - "8081:8080"
     image: datagraft/jarfter
     restart: always
