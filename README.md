@@ -42,6 +42,8 @@ Grafterizer has the following sub-components:
 - [Nivethika Mahasivam](https://github.com/nivemaham)
 - [Dennis Gan](https://github.com/dennisgan)
 - [Bjørn Marius Von Zernichow](https://github.com/bmzernichow)
+- [Håvard Heitlo Holm](https://github.com/havahol)
 
 ## License
+
 Available under the [Eclipse Public License](/LICENSE) (v1.0).
