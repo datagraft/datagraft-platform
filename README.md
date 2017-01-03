@@ -5,6 +5,7 @@ This repository contains shell start-up and configuration scripts to configure, 
 ## Architecture
 
 TBD
+![datagraft-platform](https://cloud.githubusercontent.com/assets/2796494/21607399/0bd98db8-d1b6-11e6-8f3f-6d74ba24bc98.png)
 
 ## Development Team
 
