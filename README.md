@@ -7,7 +7,7 @@ This repository contains shell start-up and configuration scripts to configure, 
 The DataGraft Platform consists of two main parts:
 
 1. DataGraft
-2. Grafterizer.
+2. Grafterizer
 
 Both of these parts have been implemented through a microservice architecture consisting of a large number of sub-components, each contained in a Docker container. The DataGraft and Grafterizer tool user interfaces have been integrated to provide a consistent user experience, whereby their connected microservices communicate with each other through REST. The individual components are illustrated in the figure below. 
 
