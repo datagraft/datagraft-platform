@@ -84,8 +84,31 @@ Edit the `startup.sh` script if you want to change the default login name 'admin
 
 ### Amazon S3 and RDS configuration
 
-The default `docker-compose.yml` file is configured to deploy and run DataGraft Platform on localhost. To configure it for the cloud deployment on [Amazon S3](https://aws.amazon.com/s3/) with [Amazon RDS](https://aws.amazon.com/rds/) you will need to change the environment variables for the database service:
+The default `docker-compose.yml` file is configured to deploy and run DataGraft Platform on localhost using Postgres. To configure it for the cloud deployment on [Amazon S3](https://aws.amazon.com/s3/) with [Amazon RDS](https://aws.amazon.com/rds/) you will need to:
 
+* Remove the `database` service from the `docker-compose.yml` file.
+* Change the environment variables for the `datagraft-portal` service.
+
+Instead of running `startup.sh` script to add a Postgres administrator user, you need to set up an [AWS Identity and Access Management (AIM) user](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_SettingUp.html#CHAP_SettingUp.IAM) for the DataGraft Platform.
+
+#### database
+
+Remove the `database` entry under `services`.
+
+#### datagraft-portal
+
+Remove dependencies to the Postgres service under `links`:
+* `-database:database-host`
+
+Remove execution of the startup script under `commands`:
+* `bash startup.sh`
+
+Remove the following environments that used for Postgres:
+* `DATABASE_URL` - URL of the Postgres database
+* `DATABASE_HOST` - host of the Postgres database
+* `DATABASE_PASSWORD` - password of the admin user (defined in `startup.sh`)
+
+Add the following environment variables used for AWS S3 and RDS.
 * `AWS_RDS_DB_NAME` - name of the database
 * `AWS_RDS_DB_USERNAME` - name of the database user
 * `AWS_RDS_DB_PASSWORD` - password for the database
