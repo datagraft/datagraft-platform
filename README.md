@@ -138,6 +138,7 @@ For posting information about bugs, questions and discussions please use the [Gi
 
 - [Antoine Pultier](https://github.com/yellowiscool)
 - [Dina Sukhobok](https://github.com/dinans)
+- [Christian Rotari](https://github.com/rotaricristian)
 - [Ana Tarita](https://github.com/taritaAna)
 - [Nivethika Mahasivam](https://github.com/nivemaham)
 - [Dennis Gan](https://github.com/dennisgan)
