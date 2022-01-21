@@ -7,7 +7,7 @@ volumes:
 services:
   database:
     ports:
-      - "5432:5432"
+      - "5433:5432"
     container_name: datagraft-db
     image: postgres:9.5
     volumes:
@@ -37,7 +37,7 @@ services:
       DATAGRAFT_DEPLOY_PORT: 3003 
   grafterizer:
     container_name: grafterizer
-    image: datagraft/grafterizer
+    image: datagraft/grafterizer2
     ports:
       - "9000:80"
     links:
@@ -46,6 +46,7 @@ services:
       - vocabulary-manager
       - graftwerk-cache
       - jarfter
+      - arango-generator
     restart: always
   grafterizer-dispatch-service:
     container_name: grafterizer-dispatch-service
@@ -103,3 +104,13 @@ services:
     restart: always
     ports:
       - "8081:8080"
+  arango-generator:
+    container_name: arango-generator
+    environment:
+      HTTP_PORT: 3030
+      RESULT_STORAGE_LOCATION: ./results/
+      INPUT_STORAGE_LOCATION: ./uploads/
+    ports:
+      - "3030:3030"
+    image: datagraft/arango-generator
+    restart: always
